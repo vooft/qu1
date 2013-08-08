@@ -25,9 +25,11 @@ protected:
 private slots:
     void doAddRow(const QString &path, bool isDir);
     void doUpload();
+    void onImportFinished();
 
 signals:
     void addRow(const QString &path, bool isDir);
+    void importFinished();
 
 private:
     void doImport(const QString &str);

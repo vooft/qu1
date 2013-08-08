@@ -1,4 +1,5 @@
 #include <QtConcurrent/QtConcurrent>
+#include <QMessageBox>
 
 #include "cglobals.h"
 #include "cubuntuonetask.h"
@@ -22,6 +23,7 @@ CUploadDialog::CUploadDialog(const QString &localDir, const QString &remoteDir, 
 
     connect(this, &CUploadDialog::addRow, this, &CUploadDialog::doAddRow);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &CUploadDialog::doUpload);
+    connect(this, &CUploadDialog::importFinished, this, &CUploadDialog::onImportFinished);
 
     m_abort = false;
     QFuture<void> func = QtConcurrent::run(this, &CUploadDialog::doImport, m_localDir);
@@ -66,6 +68,8 @@ void CUploadDialog::doUpload()
     QFile logFile("/home/vooft/upload.log");
     logFile.open(QIODevice::WriteOnly);
 
+    ui->buttonBox->setEnabled(false);
+
     QTextStream log(&logFile);
 
     QEventLoop loop;
@@ -76,6 +80,8 @@ void CUploadDialog::doUpload()
     bool files = ui->fileCheckBox->isChecked();
 
     for(int i=0, count = ui->tableWidget->rowCount(); i<count; i++) {
+        ui->progressBar->setValue(i);
+
         QString path = ui->tableWidget->item(i, FULL_PATH)->text();
         QString relPath = ui->tableWidget->item(i, REL_PATH)->text();
         QString isDir = ui->tableWidget->item(i, IS_DIR)->text();
@@ -112,6 +118,15 @@ void CUploadDialog::doUpload()
     }
 
     logFile.close();
+
+    DEBUG << "upload finished";
+
+    QMessageBox::information(this, QString::fromUtf8("Ок"), QString::fromUtf8("Финита ля комедия"));
+}
+
+void CUploadDialog::onImportFinished()
+{
+    ui->progressBar->setMaximum(ui->tableWidget->rowCount());
 }
 
 
@@ -136,6 +151,10 @@ void CUploadDialog::doImport(const QString &str)
             emit addRow(dir.absoluteFilePath(filename), false);
         }
     }
+
+    DEBUG << "import finished";
+
+    emit importFinished();
 }
 
 QStringList CUploadDialog::findDirectories(const QString &str)
