@@ -27,6 +27,7 @@ public:
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
 
     QString fullPath(const QModelIndex &index) const;
+    QString volume(const QModelIndex &index) const;
 
     /*Qt::DropActions supportedDropActions() const;
     QStringList mimeTypes() const;

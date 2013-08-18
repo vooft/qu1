@@ -44,6 +44,8 @@ private slots:
 
     void on_uploadDirButton_clicked();
 
+    void on_checkButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     CUbuntuOneService *m_service;

@@ -56,12 +56,28 @@ void CTreeItem::setIsFile(bool state)
     m_isFile = state;
 }
 
-QString CTreeItem::fullPath()
+QString CTreeItem::fullPath() const
+{
+    //if(m_parent==0)
+    if(m_parent==0)
+        return "";
+    else if(m_parent->parent()==0)
+        return volume(); // если том
+    else
+        return volume() + m_path;
+
+    //return m_parent->fullPath() + m_path;
+}
+
+QString CTreeItem::volume() const
 {
     if(m_parent==0)
+        return "";
+
+    if(m_parent->parent()==0)
         return m_path;
 
-    return m_parent->fullPath() + m_path;
+    return m_parent->volume();
 }
 
 bool CTreeItem::hasChildren() const

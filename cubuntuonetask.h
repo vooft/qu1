@@ -15,6 +15,7 @@ public:
 
     bool createDirectory(const QString &path);
     bool uploadFile(const QString &localPath, const QString &remotePath);
+    QByteArray queryNodeInfo(const QString &path);
     
 signals:
     void finished();

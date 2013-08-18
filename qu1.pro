@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     croottreeitem.cpp \
     ctableproxymodel.cpp \
     cuploaddialog.cpp \
-    cubuntuonetask.cpp
+    cubuntuonetask.cpp \
+    ccheckfilesdialog.cpp
 
 HEADERS  += mainwindow.h \
     cubuntuoneservice.h \
@@ -36,9 +37,11 @@ HEADERS  += mainwindow.h \
     croottreeitem.h \
     ctableproxymodel.h \
     cuploaddialog.h \
-    cubuntuonetask.h
+    cubuntuonetask.h \
+    ccheckfilesdialog.h
 
 FORMS    += mainwindow.ui \
-    cuploaddialog.ui
+    cuploaddialog.ui \
+    ccheckfilesdialog.ui
 
 include(oauth/oauth.pri)

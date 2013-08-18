@@ -24,7 +24,8 @@ public:
     bool isFile() const;
     void setIsFile(bool state);
 
-    QString fullPath();
+    QString fullPath() const;
+    QString volume() const;
 
     bool hasChildren() const;
     void setHasChildren(bool state);

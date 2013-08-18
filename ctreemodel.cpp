@@ -58,6 +58,15 @@ QString CTreeModel::fullPath(const QModelIndex &index) const
     return item->fullPath();
 }
 
+QString CTreeModel::volume(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return QString();
+
+    CTreeItem *item = static_cast<CTreeItem*>(index.internalPointer());
+    return item->volume();
+}
+
 void CTreeModel::expanded(const QModelIndex &index)
 {
     DEBUG << "expanded";
@@ -67,7 +76,7 @@ void CTreeModel::expanded(const QModelIndex &index)
 
     CTreeItem *item = static_cast<CTreeItem*>(index.internalPointer());
     connect(item, &CTreeItem::refreshed, this, &CTreeModel::itemRefreshed);
-
+    beginRemoveRows(index, 0, item->childCount());
     item->refresh();
 }
 
@@ -88,6 +97,8 @@ void CTreeModel::collapsed(const QModelIndex &index)
 void CTreeModel::itemRefreshed()
 {
     DEBUG << "itemRefreshed()";
+
+    endRemoveRows();
 
     CTreeItem *item = qobject_cast<CTreeItem*>(sender());
     disconnect(item, &CTreeItem::refreshed, this, &CTreeModel::itemRefreshed);

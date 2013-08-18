@@ -9,6 +9,7 @@
 #include "cuploaddialog.h"
 #include "cglobals.h"
 #include "ctreemodel.h"
+#include "ccheckfilesdialog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -118,12 +119,22 @@ void MainWindow::showError(const QString &str)
 
 void MainWindow::on_uploadFileButton_clicked()
 {
-    /*m_service->uploadFile("/home/vooft/cals.sh",
-                          QString("/content").append(m_model->fullPath(ui->tableView->rootIndex())).append("/cals.sh"));*/
-    CUbuntuOneTask task(m_service, this);
-    bool result = task.createDirectory("/~/testvol/testdir");
-    DEBUG << "created:" << result;
-    DEBUG << task.errorString();
+    QString filePath = QFileDialog::getOpenFileName(this);
+    if(filePath.isEmpty())
+        return;
+
+    QFileInfo fileInfo(filePath);
+    QString filename(fileInfo.fileName());
+
+    DEBUG << m_model->fullPath(ui->tableView->rootIndex()) + "/" + filename;
+
+    CUbuntuOneTask task(m_service);
+    bool result = task.uploadFile(filePath, m_model->fullPath(ui->tableView->rootIndex()) + "/" + filename);
+
+    if(result)
+        QMessageBox::information(this, QString::fromUtf8("Успех"), QString::fromUtf8("Файл успешно загружен"));
+    else
+        QMessageBox::critical(this, QString::fromUtf8("Ошибка"), QString::fromUtf8("Не удалось загрузить файл"));
 }
 
 void MainWindow::on_uploadDirButton_clicked()
@@ -133,5 +144,17 @@ void MainWindow::on_uploadDirButton_clicked()
         return;
 
     CUploadDialog dialog(dir, m_model->fullPath(ui->tableView->rootIndex()), m_service, this);
+    dialog.exec();
+}
+
+void MainWindow::on_checkButton_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, QString::fromUtf8("Выберите директорию для проверки"));
+    if(dir.isEmpty())
+        return;
+
+    CCheckFilesDialog dialog(dir, m_model->fullPath(ui->tableView->rootIndex()),
+                             m_model->volume(ui->tableView->rootIndex()),
+                             m_service, this);
     dialog.exec();
 }

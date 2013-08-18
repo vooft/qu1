@@ -18,6 +18,8 @@ CUploadDialog::CUploadDialog(const QString &localDir, const QString &remoteDir, 
 {
     ui->setupUi(this);
 
+    DEBUG << remoteDir;
+
     ui->tableWidget->setColumnCount(4);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "path" << "relPath" << "isDir" << "result");
 
@@ -46,13 +48,16 @@ void CUploadDialog::doAddRow(const QString &path, bool isDir)
 {
     DEBUG << "doAddRow():" << path << isDir;
 
+    QString relPath = path.right(path.length() - m_localDir.length());
+    if(relPath.length()==0)
+        return;
+
     int row = ui->tableWidget->rowCount();
     ui->tableWidget->insertRow(row);
 
     QTableWidgetItem* pathItem = new QTableWidgetItem(path);
     ui->tableWidget->setItem(row, FULL_PATH, pathItem);
 
-    QString relPath = path.right(path.length() - m_localDir.length());
     QTableWidgetItem* relPathItem = new QTableWidgetItem(relPath);
     ui->tableWidget->setItem(row, REL_PATH, relPathItem);
 
@@ -80,7 +85,7 @@ void CUploadDialog::doUpload()
     bool files = ui->fileCheckBox->isChecked();
 
     for(int i=0, count = ui->tableWidget->rowCount(); i<count; i++) {
-        ui->progressBar->setValue(i);
+        ui->progressBar->setValue(i+1);
 
         QString path = ui->tableWidget->item(i, FULL_PATH)->text();
         QString relPath = ui->tableWidget->item(i, REL_PATH)->text();
@@ -122,6 +127,7 @@ void CUploadDialog::doUpload()
     DEBUG << "upload finished";
 
     QMessageBox::information(this, QString::fromUtf8("Ок"), QString::fromUtf8("Финита ля комедия"));
+    accept();
 }
 
 void CUploadDialog::onImportFinished()

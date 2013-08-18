@@ -31,6 +31,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="checkButton">
+        <property name="text">
+         <string>Check files</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="uploadDirButton">
         <property name="text">
          <string>Upload directory</string>
@@ -93,7 +100,11 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QTableView" name="tableView"/>
+      <widget class="QTableView" name="tableView">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -104,7 +115,7 @@
      <x>0</x>
      <y>0</y>
      <width>845</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

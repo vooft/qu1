@@ -171,7 +171,7 @@ void CUbuntuOneService::onUploadFileFinished()
         QJsonDocument doc = QJsonDocument::fromJson(data);
         QJsonObject obj = doc.object();
 
-        QString size = QString::number(obj.value("size").toDouble());
+        QString size = QString::number((int) obj.value("size").toDouble());
         QString orig_size = reply->property("size").toString();
 
         if(size==orig_size) {
@@ -278,10 +278,15 @@ void CUbuntuOneService::uploadFile(const QString &localPath, const QString &remo
     }
 
     QByteArray data = f.readAll();
+    f.close();
+
+    QMimeDatabase db;
+    QMimeType mime = db.mimeTypeForFile(localPath);
+    QString mimeName = mime.name();
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, mimeName);
 
     QNetworkReply *reply = m_requestor->put(request, reqParams, data);
     reply->setProperty("size", QString::number(data.size()));

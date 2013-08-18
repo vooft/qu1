@@ -37,6 +37,18 @@ bool CUbuntuOneTask::uploadFile(const QString &localPath, const QString &remoteP
     return m_state;
 }
 
+QByteArray CUbuntuOneTask::queryNodeInfo(const QString &path)
+{
+    QEventLoop loop;
+    connect(this, &CUbuntuOneTask::finished, &loop, &QEventLoop::quit);
+
+    QNetworkReply *r = m_service->get(path);
+    connect(r, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    return r->readAll();
+}
+
 void CUbuntuOneTask::error(const QString &msg)
 {
     m_state = false;
